@@ -641,7 +641,7 @@
       transform: translateY(0);
     }
 
-    /* RESPONSIVE */
+    /* RESPONSIVE — TABLET */
     @media (max-width: 900px) {
       nav { padding: 20px 24px; }
       #hero, #showreel, #projects, footer { padding-left: 24px; padding-right: 24px; }
@@ -654,6 +654,98 @@
       .project-card:nth-child(5),
       .project-card:nth-child(6) { grid-column: span 12; }
       h1 { font-size: clamp(44px, 11vw, 80px); }
+    }
+
+    /* RESPONSIVE — MOBILE */
+    @media (max-width: 600px) {
+
+      /* Hide custom cursor completely on touch devices */
+      .cursor, .cursor-ring { display: none !important; }
+      body { cursor: auto; }
+
+      /* NAV — hamburger-style, hide links, show only logo */
+      nav {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+      }
+      .nav-logo { font-size: 16px; }
+      .nav-links {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 16px;
+        margin-top: 8px;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }
+      .nav-links::-webkit-scrollbar { display: none; }
+      .nav-links a { font-size: 9px; letter-spacing: 0.08em; white-space: nowrap; }
+
+      /* HERO — reduce empty space */
+      #hero {
+        min-height: 100svh;
+        padding: 0 20px 48px;
+        justify-content: flex-end;
+      }
+      .hero-line { left: 20px; }
+      .hero-tag { font-size: 9px; margin-bottom: 16px; }
+      h1 { font-size: clamp(40px, 13vw, 64px); line-height: 0.92; }
+      .hero-sub {
+        font-size: 11px;
+        margin-top: 20px;
+        max-width: 100%;
+      }
+      .hero-scroll { right: 20px; bottom: 48px; }
+
+      /* SHOWREEL */
+      #showreel { padding: 64px 20px; }
+
+      /* PROJECTS */
+      #projects { padding: 48px 20px 80px; }
+      .projects-header h2 { font-size: clamp(32px, 10vw, 48px); }
+      .filter-tabs { gap: 4px; }
+      .filter-tab { padding: 6px 12px; font-size: 9px; }
+
+      /* All cards full width on mobile */
+      .projects-grid { gap: 2px; }
+      .project-card:nth-child(1),
+      .project-card:nth-child(2),
+      .project-card:nth-child(3),
+      .project-card:nth-child(4),
+      .project-card:nth-child(5),
+      .project-card:nth-child(6) {
+        grid-column: span 12;
+        min-height: 200px;
+      }
+      .card-title { font-size: 22px; }
+      .card-content { padding: 20px; }
+
+      /* ABOUT */
+      #about { padding: 60px 20px; gap: 32px; }
+      .about-left h2 { font-size: clamp(36px, 10vw, 52px); margin-bottom: 24px; }
+      .stat-num { font-size: 40px; }
+      .stat-num span { font-size: 20px; }
+      .stat-label { font-size: 10px; }
+      .stat-row { padding: 20px 0; }
+
+      /* CONTACT */
+      #contact { padding: 60px 20px; gap: 40px; }
+      .contact-left h2 { font-size: clamp(36px, 10vw, 52px); }
+      .contact-link { padding: 16px 0; }
+      .link-label { font-size: 11px; }
+      .link-url { font-size: 9px; }
+
+      /* FOOTER */
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 24px 20px;
+      }
+      .footer-links { gap: 16px; }
     }
   </style>
 </head>
@@ -895,9 +987,9 @@
           <span class="link-url">artstation.com/julen</span>
           <span class="link-arrow">↗</span>
         </a>
-        <a href="mailto:julen@email.com" class="contact-link">
+        <a href="/cdn-cgi/l/email-protection#4228372e272c02272f232b2e6c212d2f" class="contact-link">
           <span class="link-label">Email</span>
-          <span class="link-url">julen@email.com</span>
+          <span class="link-url"><span class="__cf_email__" data-cfemail="81ebf4ede4efc1e4ece0e8edafe2eeec">[email&#160;protected]</span></span>
           <span class="link-arrow">↗</span>
         </a>
         <a href="https://linkedin.com" class="contact-link" target="_blank">
@@ -940,21 +1032,45 @@
   </footer>
 
   <script>
-    // Custom cursor
+    // Detect touch device — disable cursor entirely
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursorRing');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    function animateCursor() {
-      cursor.style.left = mx + 'px';
-      cursor.style.top  = my + 'px';
-      rx += (mx - rx) * 0.12;
-      ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px';
-      ring.style.top  = ry + 'px';
-      requestAnimationFrame(animateCursor);
+
+    if (!isTouchDevice) {
+      let mx = 0, my = 0, rx = 0, ry = 0;
+      let cursorTimeout;
+
+      function showCursor() {
+        cursor.style.opacity = '1';
+        ring.style.opacity = '1';
+        clearTimeout(cursorTimeout);
+        cursorTimeout = setTimeout(() => {
+          cursor.style.opacity = '0';
+          ring.style.opacity = '0';
+        }, 1500);
+      }
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+        showCursor();
+      });
+
+      function animateCursor() {
+        cursor.style.left = mx + 'px';
+        cursor.style.top  = my + 'px';
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+    } else {
+      cursor.style.display = 'none';
+      ring.style.display = 'none';
     }
-    animateCursor();
 
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
