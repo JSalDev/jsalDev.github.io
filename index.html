@@ -114,12 +114,48 @@
       overflow: hidden;
     }
 
+    /* HERO CAROUSEL */
+    .hero-carousel {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .hero-carousel-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(3px) brightness(0.18);
+      opacity: 0;
+      transform: scale(1.05);
+      transition: opacity 1.5s ease;
+      animation: kenBurns 8s ease-in-out infinite alternate;
+    }
+    .hero-carousel-slide.active {
+      opacity: 1;
+    }
+    .hero-carousel-slide:nth-child(1) { background-image: url('Bkg_1.jpg'); animation-delay: 0s; }
+    .hero-carousel-slide:nth-child(2) { background-image: url('Bkg_2.jpg'); animation-delay: 2.5s; }
+    .hero-carousel-slide:nth-child(3) { background-image: url('Bkg_3.jpg'); animation-delay: 5s; }
+
+    @keyframes kenBurns {
+      from { transform: scale(1.0); }
+      to   { transform: scale(1.08); }
+    }
+
     .hero-bg {
       position: absolute;
       inset: 0;
+      z-index: 1;
       background:
-        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(122,158,142,0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 20% 70%, rgba(200,184,154,0.04) 0%, transparent 60%);
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(122,158,142,0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 70%, rgba(200,184,154,0.03) 0%, transparent 60%);
+    }
+
+    .hero-tag, h1, .hero-sub, .hero-scroll, .hero-line {
+      position: relative;
+      z-index: 2;
     }
 
     .hero-line {
@@ -770,6 +806,11 @@
 
   <!-- HERO -->
   <section id="hero">
+    <div class="hero-carousel">
+      <div class="hero-carousel-slide active"></div>
+      <div class="hero-carousel-slide"></div>
+      <div class="hero-carousel-slide"></div>
+    </div>
     <div class="hero-bg"></div>
     <div class="hero-line"></div>
     <p class="hero-tag">VFX Artist &amp; Game Developer</p>
@@ -928,7 +969,6 @@
       <p class="about-text">Soy <strong>Julen Salazar</strong>, artista VFX y desarrollador de videojuegos especializado en crear experiencias visuales que fusionan la técnica con la narrativa.</p>
       <p class="about-text">Trabajo en el espacio donde <strong>el cine y el juego</strong> se encuentran — partículas que cuentan historias, mundos que respiran, efectos que dan escalofríos.</p>
       <div class="skills-list">
-        <span class="skill-tag">Houdini</span>
         <span class="skill-tag">Unreal 5</span>
         <span class="skill-tag">Unity</span>
         <span class="skill-tag">Niagara</span>
@@ -951,18 +991,6 @@
         <div>
           <div class="stat-num">40<span>+</span></div>
           <div class="stat-label">Proyectos completados</div>
-        </div>
-      </div>
-      <div class="stat-row">
-        <div>
-          <div class="stat-num">12<span>+</span></div>
-          <div class="stat-label">Clientes internacionales</div>
-        </div>
-      </div>
-      <div class="stat-row">
-        <div>
-          <div class="stat-num">3<span>×</span></div>
-          <div class="stat-label">Premios de industria</div>
         </div>
       </div>
     </div>
@@ -1025,6 +1053,15 @@
   </footer>
 
   <script>
+    // Hero carousel
+    const slides = document.querySelectorAll('.hero-carousel-slide');
+    let currentSlide = 0;
+    setInterval(() => {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }, 6000);
+
     // Detect touch device — disable cursor entirely
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     const cursor = document.getElementById('cursor');
