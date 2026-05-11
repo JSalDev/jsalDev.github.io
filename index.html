@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Julen Salazar — VFX & Game Dev</title>
+  <title>Julen Salazar — VFX Artist & Game Developer</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -465,6 +465,20 @@
       border-color: var(--accent);
     }
 
+    /* ABOUT PHOTO */
+    .about-photo-wrap {
+      margin-bottom: 32px;
+    }
+    .about-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top;
+      border: 1px solid var(--border);
+      filter: grayscale(20%);
+    }
+
     /* ABOUT */
     #about {
       padding: 120px 48px;
@@ -786,6 +800,166 @@
       }
       .footer-links { gap: 16px; }
     }
+    /* PROJECT MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(8px);
+      padding: 24px;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 1100px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(24px);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.open .modal-container {
+      transform: translateY(0);
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+    .modal-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 500px;
+    }
+    .modal-left {
+      padding: 48px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .modal-category {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent2);
+    }
+    .modal-title {
+      font-family: var(--ff-display);
+      font-size: clamp(28px, 3vw, 48px);
+      font-weight: 300;
+      line-height: 1;
+      color: var(--text);
+    }
+    .modal-title em { font-style: italic; color: var(--accent); }
+    .modal-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+    .modal-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .modal-tool-tag {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .modal-vimeo {
+      margin-top: 8px;
+    }
+    .modal-vimeo a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+    .modal-vimeo a:hover { opacity: 0.7; }
+    .modal-right {
+      padding: 48px;
+    }
+    .modal-carousel { position: relative; }
+    .modal-slides { position: relative; }
+    .modal-slide {
+      display: none;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .modal-slide.active { display: block; }
+    .modal-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .modal-slide-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+    }
+    .modal-carousel-nav {
+      display: flex;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .modal-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      padding: 0;
+    }
+    .modal-dot.active { background: var(--accent); }
+
+    @media (max-width: 700px) {
+      .modal-inner { grid-template-columns: 1fr; }
+      .modal-left { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 24px; }
+      .modal-right { padding: 32px 24px; }
+    }
+
   </style>
 </head>
 <body>
@@ -798,9 +972,9 @@
     <a href="#" class="nav-logo">Julen <span>Salazar</span></a>
     <ul class="nav-links">
       <li><a href="#showreel">Showreel</a></li>
-      <li><a href="#projects">Proyectos</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contacto</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
 
@@ -815,7 +989,7 @@
     <div class="hero-line"></div>
     <p class="hero-tag">VFX Artist &amp; Game Developer</p>
     <h1>Visual<br/><em>Worlds</em><br/>Built.</h1>
-    <p class="hero-sub">Creando experiencias visuales que desafían los límites entre el cine y el videojuego. Cada frame, cada partícula, cada mundo — diseñado con precisión.</p>
+    <p class="hero-sub">Crafting visual experiences between cinema and video games. Telling a story with every frame, every particle, every world — with precision.</p>
     <div class="hero-scroll">
       <div class="scroll-line"></div>
       <span>Scroll</span>
@@ -824,19 +998,41 @@
 
   <!-- SHOWREEL -->
   <section id="showreel">
-    <div class="section-label reveal">01 — Showreel</div>
+    <div class="section-label reveal">01 — Showreel 2026</div>
     <div class="reel-container reveal">
       <iframe src="https://player.vimeo.com/video/1190963467?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Julen Salazar — VFX Showreel 2025"></iframe>
     </div>
     <script src="https://player.vimeo.com/api/player.js"></script>
   </section>
 
+  <!-- PROJECT MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-inner">
+        <div class="modal-left">
+          <p class="modal-category" id="modalCategory"></p>
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <p class="modal-description" id="modalDescription"></p>
+          <div class="modal-tools" id="modalTools"></div>
+          <div class="modal-vimeo" id="modalVimeo"></div>
+        </div>
+        <div class="modal-right">
+          <div class="modal-carousel" id="modalCarousel">
+            <div class="modal-slides" id="modalSlides"></div>
+            <div class="modal-carousel-nav" id="modalCarouselNav"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PROJECTS -->
   <section id="projects">
     <div class="projects-header reveal">
-      <h2>Trabajos<br/><em>Seleccionados</em></h2>
+      <h2>Latest<br/><em>Developments</em></h2>
       <div class="filter-tabs">
-        <button class="filter-tab active">Todo</button>
+        <button class="filter-tab active">All</button>
         <button class="filter-tab">VFX</button>
         <button class="filter-tab">Games</button>
       </div>
@@ -964,33 +1160,50 @@
   <!-- ABOUT -->
   <section id="about">
     <div class="about-left reveal">
-      <div class="section-label">03 — Sobre mí</div>
+      <div class="about-photo-wrap">
+        <img src="Profile_photo.jpg" class="about-photo" alt="Julen Salazar" />
+      </div>
+      <div class="section-label">03 — About</div>
       <h2>Crafting<br/><em>Chaos</em><br/>with Code.</h2>
-      <p class="about-text">Soy <strong>Julen Salazar</strong>, artista VFX y desarrollador de videojuegos especializado en crear experiencias visuales que fusionan la técnica con la narrativa.</p>
-      <p class="about-text">Trabajo en el espacio donde <strong>el cine y el juego</strong> se encuentran — partículas que cuentan historias, mundos que respiran, efectos que dan escalofríos.</p>
+      <p class="about-text">I'm <strong>Julen Salazar</strong>, a VFX artist and game developer specialised in creating visual experiences that fuse technique with narrative.</p>
+      <p class="about-text">I work in the space where <strong>cinema and games</strong> converge — particles that tell stories, worlds that breathe, effects that give you chills.</p>
       <div class="skills-list">
         <span class="skill-tag">Unreal 5</span>
         <span class="skill-tag">Unity</span>
+        <span class="skill-tag">NReal AR</span>
         <span class="skill-tag">Niagara</span>
         <span class="skill-tag">HLSL</span>
-        <span class="skill-tag">Blender</span>
-        <span class="skill-tag">After Effects</span>
+        <span class="skill-tag">3ds Max</span>
+        <span class="skill-tag">V-Ray</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Adobe Suite</span>
         <span class="skill-tag">C++</span>
         <span class="skill-tag">C#</span>
-        <span class="skill-tag">Python</span>
       </div>
     </div>
     <div class="about-right reveal">
       <div class="stat-row">
         <div>
-          <div class="stat-num">7<span>+</span></div>
-          <div class="stat-label">Años de experiencia</div>
+          <div class="stat-num">15<span>+</span></div>
+          <div class="stat-label">Years of Experience</div>
         </div>
       </div>
       <div class="stat-row">
         <div>
           <div class="stat-num">40<span>+</span></div>
-          <div class="stat-label">Proyectos completados</div>
+          <div class="stat-label">Completed Projects</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div>
+          <div class="stat-num">11<span>+</span></div>
+          <div class="stat-label">Years Teaching</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div>
+          <div class="stat-num"><span>↗</span> Remote</div>
+          <div class="stat-label">Available Worldwide</div>
         </div>
       </div>
     </div>
@@ -999,23 +1212,23 @@
   <!-- CONTACT -->
   <section id="contact">
     <div class="contact-left reveal">
-      <div class="section-label">04 — Contacto</div>
+      <div class="section-label">04 — Contact</div>
       <h2>Let's<br/><em>Build</em><br/>Together.</h2>
-      <p>¿Tienes un proyecto en mente? Hablemos. Siempre abierto a nuevas colaboraciones, proyectos freelance o simplemente intercambiar ideas.</p>
+      <p>I'm actively looking for a <strong>remote, stable position</strong> where I can bring high-quality VFX and game development to ambitious projects. I'm also open to punctual collaborations — if the project is right.</p>
       <div class="contact-links">
-        <a href="https://www.artstation.com" class="contact-link" target="_blank">
+        <a href="https://www.artstation.com/jsalazardev" class="contact-link" target="_blank">
           <span class="link-label">ArtStation</span>
-          <span class="link-url">artstation.com/julen</span>
+          <span class="link-url">artstation.com/jsalazardev</span>
           <span class="link-arrow">↗</span>
         </a>
-        <a href="/cdn-cgi/l/email-protection#4228372e272c02272f232b2e6c212d2f" class="contact-link">
+        <a href="mailto:jsalazardevelopments@gmail.com" class="contact-link">
           <span class="link-label">Email</span>
-          <span class="link-url"><span class="__cf_email__" data-cfemail="81ebf4ede4efc1e4ece0e8edafe2eeec">[email&#160;protected]</span></span>
+          <span class="link-url">jsalazardevelopments@gmail.com</span>
           <span class="link-arrow">↗</span>
         </a>
-        <a href="https://linkedin.com" class="contact-link" target="_blank">
+        <a href="https://es.linkedin.com/in/julen-salazar-a05a95a6" class="contact-link" target="_blank">
           <span class="link-label">LinkedIn</span>
-          <span class="link-url">linkedin.com/in/julen</span>
+          <span class="link-url">linkedin.com/in/julen-salazar</span>
           <span class="link-arrow">↗</span>
         </a>
       </div>
@@ -1023,19 +1236,19 @@
     <div class="contact-right reveal">
       <div class="contact-form">
         <div class="form-group">
-          <input type="text" placeholder="Nombre" />
+          <input type="text" placeholder="Name" />
         </div>
         <div class="form-group">
           <input type="email" placeholder="Email" />
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Asunto del proyecto" />
+          <input type="text" placeholder="Project subject" />
         </div>
         <div class="form-group">
-          <textarea placeholder="Cuéntame sobre el proyecto..."></textarea>
+          <textarea placeholder="Tell me about the project..."></textarea>
         </div>
         <button class="submit-btn">
-          <span>Enviar mensaje</span>
+          <span>Send message</span>
           <span>→</span>
         </button>
       </div>
@@ -1044,15 +1257,132 @@
 
   <!-- FOOTER -->
   <footer>
-    <span>© 2025 Julen Salazar. Todos los derechos reservados.</span>
+    <span>© 2026 Julen Salazar. All rights reserved.</span>
     <div class="footer-links">
-      <a href="#hero">Inicio</a>
-      <a href="#projects">Proyectos</a>
-      <a href="#contact">Contacto</a>
+      <a href="#hero">Home</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
     </div>
   </footer>
 
   <script>
+    // Project Modal
+    const projectData = [
+      {
+        title: "Nebula<br/><em>Destruction</em>",
+        category: "VFX — Particles",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        tools: ["Unreal Engine 5", "Houdini"],
+        vimeo: "",
+        images: []
+      },
+      {
+        title: "Echo<br/><em>Protocol</em>",
+        category: "Game Dev",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+        tools: ["Unity", "C#", "HLSL"],
+        vimeo: "",
+        images: []
+      },
+      {
+        title: "Pyroclastic<br/><em>Flow</em>",
+        category: "VFX — Fluids",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+        tools: ["Houdini", "Karma XPU"],
+        vimeo: "",
+        images: []
+      },
+      {
+        title: "Void<br/><em>Garden</em>",
+        category: "Game Dev",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+        tools: ["Unreal 5", "Blueprint"],
+        vimeo: "",
+        images: []
+      },
+      {
+        title: "Fracture<br/><em>Sim</em>",
+        category: "VFX — Simulation",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+        tools: ["Houdini", "RBD"],
+        vimeo: "",
+        images: []
+      },
+      {
+        title: "Stasis<br/><em>Zero</em>",
+        category: "Game Dev",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+        tools: ["Unity", "Shader Graph"],
+        vimeo: "",
+        images: []
+      }
+    ];
+
+    const overlay = document.getElementById('modalOverlay');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(index) {
+      const p = projectData[index];
+      document.getElementById('modalCategory').textContent = p.category;
+      document.getElementById('modalTitle').innerHTML = p.title;
+      document.getElementById('modalDescription').textContent = p.description;
+
+      const toolsEl = document.getElementById('modalTools');
+      toolsEl.innerHTML = p.tools.map(t => `<span class="modal-tool-tag">${t}</span>`).join('');
+
+      const vimeoEl = document.getElementById('modalVimeo');
+      vimeoEl.innerHTML = p.vimeo
+        ? `<a href="${p.vimeo}" target="_blank">Watch on Vimeo ↗</a>`
+        : '';
+
+      const slidesEl = document.getElementById('modalSlides');
+      const navEl = document.getElementById('modalCarouselNav');
+      if (p.images.length > 0) {
+        slidesEl.innerHTML = p.images.map((img, i) =>
+          `<div class="modal-slide ${i===0?'active':''}"><img src="${img}" alt=""/></div>`
+        ).join('');
+        navEl.innerHTML = p.images.map((_, i) =>
+          `<button class="modal-dot ${i===0?'active':''}" data-idx="${i}"></button>`
+        ).join('');
+        navEl.querySelectorAll('.modal-dot').forEach(dot => {
+          dot.addEventListener('click', () => {
+            slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
+            navEl.querySelectorAll('.modal-dot').forEach(d => d.classList.remove('active'));
+            slidesEl.querySelectorAll('.modal-slide')[dot.dataset.idx].classList.add('active');
+            dot.classList.add('active');
+          });
+        });
+      } else {
+        slidesEl.innerHTML = `<div class="modal-slide active"><div class="modal-slide-placeholder">Images coming soon</div></div>`;
+        navEl.innerHTML = '';
+      }
+
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    modalClose.addEventListener('click', () => {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    document.querySelectorAll('.project-card').forEach((card, i) => {
+      card.addEventListener('click', () => openModal(i));
+      card.style.cursor = 'pointer';
+    });
+
     // Hero carousel
     const slides = document.querySelectorAll('.hero-carousel-slide');
     let currentSlide = 0;
