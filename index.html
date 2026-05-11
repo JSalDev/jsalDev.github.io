@@ -466,12 +466,18 @@
     }
 
     /* ABOUT PHOTO */
-    .about-photo-wrap {
+    .about-header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
       margin-bottom: 32px;
     }
+    .about-photo-wrap {
+      flex-shrink: 0;
+    }
     .about-photo {
-      width: 120px;
-      height: 120px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
       object-fit: cover;
       object-position: top;
@@ -493,7 +499,6 @@
       font-size: clamp(40px, 5vw, 72px);
       font-weight: 300;
       line-height: 1;
-      margin-bottom: 40px;
     }
     .about-left h2 em { font-style: italic; color: var(--accent); }
     .about-text {
@@ -1160,10 +1165,13 @@
   <!-- ABOUT -->
   <section id="about">
     <div class="about-left reveal">
-      <div class="about-photo-wrap">
-        <img src="Profile_photo.jpg" class="about-photo" alt="Julen Salazar" />
-      </div>
       <div class="section-label">03 — About</div>
+      <div class="about-header">
+        <div class="about-photo-wrap">
+          <img src="Profile_photo.jpg" class="about-photo" alt="Julen Salazar" />
+        </div>
+        <h2>Crafting<br/><em>Chaos</em><br/>with Code.</h2>
+      </div>
       <h2>Crafting<br/><em>Chaos</em><br/>with Code.</h2>
       <p class="about-text">I'm <strong>Julen Salazar</strong>, a VFX artist and game developer specialised in creating visual experiences that fuse technique with narrative.</p>
       <p class="about-text">I work in the space where <strong>cinema and games</strong> converge — particles that tell stories, worlds that breathe, effects that give you chills.</p>
