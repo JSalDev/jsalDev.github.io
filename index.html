@@ -962,17 +962,45 @@
     }
     .modal-carousel-nav {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
       margin-top: 16px;
+      gap: 12px;
     }
-    .modal-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-      border: none;
+    .modal-arrow {
+      width: 44px; height: 44px;
+      min-width: 44px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      transition: background 0.2s;
-      padding: 0;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .modal-arrow:hover,
+    .modal-arrow:active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .modal-slide-counter {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-align: center;
+      flex: 1;
+    }
+    .modal-slide-counter span {
+      color: var(--accent);
+    }
+    .modal-slide video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .modal-slide video {
       width: 100%;
@@ -1187,9 +1215,9 @@
         </div>
         <div class="card-glow glow-warm"></div>
         <div class="card-content">
-          <p class="card-category">Automotive Reel</p>
-          <h3 class="card-title">CarViz &amp;<br/>Marketing</h3>
-          <div class="card-meta">3ds Max · Unreal · Niagara</div>
+          <p class="card-category">Other Works</p>
+          <h3 class="card-title">ProdViz &amp;<br/>Marketing</h3>
+          <div class="card-meta">3ds Max · V-Ray · After Effects</div>
         </div>
         <span class="card-number">007</span>
         <div class="card-arrow">
@@ -1376,6 +1404,33 @@
     const overlay = document.getElementById('modalOverlay');
     const modalClose = document.getElementById('modalClose');
 
+    function buildCarouselNav(slidesEl, navEl, total, labels) {
+      let current = 0;
+
+      function goTo(idx) {
+        // Pause any videos
+        slidesEl.querySelectorAll('video').forEach(v => v.pause());
+        slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
+        current = (idx + total) % total;
+        slidesEl.querySelectorAll('.modal-slide')[current].classList.add('active');
+        const labelText = labels ? labels[current] : `${current + 1} / ${total}`;
+        const counter = navEl.querySelector('.modal-slide-counter');
+        if (counter) counter.innerHTML = `<span>${labelText}</span>`;
+      }
+
+      const firstLabel = labels ? labels[0] : `1 / ${total}`;
+      navEl.innerHTML = total > 1 ? `
+        <button class="modal-arrow" id="modalPrev">←</button>
+        <div class="modal-slide-counter"><span>${firstLabel}</span></div>
+        <button class="modal-arrow" id="modalNext">→</button>
+      ` : '';
+
+      if (total > 1) {
+        navEl.querySelector('#modalPrev').addEventListener('click', () => goTo(current - 1));
+        navEl.querySelector('#modalNext').addEventListener('click', () => goTo(current + 1));
+      }
+    }
+
     function openModal(index) {
       const p = projectData[index];
       document.getElementById('modalCategory').textContent = p.category;
@@ -1393,51 +1448,18 @@
       const slidesEl = document.getElementById('modalSlides');
       const navEl = document.getElementById('modalCarouselNav');
 
-      // Support videos
       if (p.videos && p.videos.length > 0) {
         slidesEl.innerHTML = p.videos.map((vid, i) =>
           `<div class="modal-slide ${i===0?'active':''}">
-            <video src="${vid}" controls preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>
+            <video src="${vid}" controls preload="metadata"></video>
           </div>`
         ).join('');
-        const labels = p.videoLabels || p.videos.map((_, i) => `Video ${i+1}`);
-        navEl.innerHTML = labels.map((label, i) =>
-          `<button class="modal-dot ${i===0?'active':''}" data-idx="${i}" style="width:auto;border-radius:0;padding:4px 10px;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--muted);">${label}</button>`
-        ).join('');
-        navEl.querySelectorAll('.modal-dot').forEach(dot => {
-          dot.addEventListener('click', () => {
-            // Pause all videos
-            slidesEl.querySelectorAll('video').forEach(v => v.pause());
-            slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
-            navEl.querySelectorAll('.modal-dot').forEach(d => {
-              d.classList.remove('active');
-              d.style.borderColor = 'var(--border)';
-              d.style.color = 'var(--muted)';
-            });
-            slidesEl.querySelectorAll('.modal-slide')[dot.dataset.idx].classList.add('active');
-            dot.classList.add('active');
-            dot.style.borderColor = 'var(--accent)';
-            dot.style.color = 'var(--accent)';
-          });
-        });
-        // Style first dot as active
-        const firstDot = navEl.querySelector('.modal-dot');
-        if (firstDot) { firstDot.style.borderColor = 'var(--accent)'; firstDot.style.color = 'var(--accent)'; }
-      } else if (p.images.length > 0) {
+        buildCarouselNav(slidesEl, navEl, p.videos.length, p.videoLabels || null);
+      } else if (p.images && p.images.length > 0) {
         slidesEl.innerHTML = p.images.map((img, i) =>
           `<div class="modal-slide ${i===0?'active':''}"><img src="${img}" alt=""/></div>`
         ).join('');
-        navEl.innerHTML = p.images.map((_, i) =>
-          `<button class="modal-dot ${i===0?'active':''}" data-idx="${i}"></button>`
-        ).join('');
-        navEl.querySelectorAll('.modal-dot').forEach(dot => {
-          dot.addEventListener('click', () => {
-            slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
-            navEl.querySelectorAll('.modal-dot').forEach(d => d.classList.remove('active'));
-            slidesEl.querySelectorAll('.modal-slide')[dot.dataset.idx].classList.add('active');
-            dot.classList.add('active');
-          });
-        });
+        buildCarouselNav(slidesEl, navEl, p.images.length, null);
       } else {
         slidesEl.innerHTML = `<div class="modal-slide active"><div class="modal-slide-placeholder">Images coming soon</div></div>`;
         navEl.innerHTML = '';
