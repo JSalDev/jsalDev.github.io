@@ -373,9 +373,17 @@
     .card-bg-1 { background: linear-gradient(135deg, #1a1a18 0%, #0f1a16 50%, #0c1510 100%); }
     .card-bg-2 { background: linear-gradient(135deg, #16161a 0%, #111118 100%); }
     .card-bg-3 { background: linear-gradient(135deg, #1a1410 0%, #16110c 100%); }
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+    }
     .card-bg-4 { background: linear-gradient(135deg, #101618 0%, #0c1214 100%); }
     .card-bg-5 { background: linear-gradient(135deg, #161018 0%, #110c14 100%); }
     .card-bg-6 { background: linear-gradient(135deg, #181614 0%, #141210 100%); }
+    .card-bg-7 { background: linear-gradient(135deg, #141418 0%, #101014 100%); }
+
+    .project-card:nth-child(7) { grid-column: span 12; min-height: 200px; }
 
     .card-pattern {
       position: absolute;
@@ -782,7 +790,8 @@
       .project-card:nth-child(3),
       .project-card:nth-child(4),
       .project-card:nth-child(5),
-      .project-card:nth-child(6) {
+      .project-card:nth-child(6),
+      .project-card:nth-child(7) {
         grid-column: span 12;
         min-height: 200px;
       }
@@ -965,7 +974,11 @@
       transition: background 0.2s;
       padding: 0;
     }
-    .modal-dot.active { background: var(--accent); }
+    .modal-slide video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
     @media (max-width: 700px) {
       .modal-inner { grid-template-columns: 1fr; }
@@ -1013,7 +1026,7 @@
   <section id="showreel">
     <div class="section-label reveal">01 — Showreel 2026</div>
     <div class="reel-container reveal">
-      <iframe src="https://player.vimeo.com/video/1190963467?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Julen Salazar — VFX Showreel 2025"></iframe>
+      <iframe src="https://player.vimeo.com/video/1190963467?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;loop=1&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Julen Salazar — VFX Showreel 2026"></iframe>
     </div>
     <script src="https://player.vimeo.com/api/player.js"></script>
   </section>
@@ -1060,9 +1073,9 @@
         </div>
         <div class="card-glow glow-green"></div>
         <div class="card-content">
-          <p class="card-category">Game Dev - FPS </p>
-          <h3 class="card-title">Unity<br/>One Shot</h3>
-          <div class="card-meta">Unreal Engine 5 · C++ · Niagara</div>
+          <p class="card-category">VFX — Partículas</p>
+          <h3 class="card-title">Nebula<br/>Destruction</h3>
+          <div class="card-meta">Unreal Engine 5 · Houdini</div>
         </div>
         <span class="card-number">001</span>
         <div class="card-arrow">
@@ -1080,8 +1093,8 @@
         <div class="card-glow glow-warm"></div>
         <div class="card-content">
           <p class="card-category">Game Dev</p>
-          <h3 class="card-title">Cypher Quest</h3>
-          <div class="card-meta">Unity · C# · HLSL · Shuriken · VFX Graph</div>
+          <h3 class="card-title">Echo Protocol</h3>
+          <div class="card-meta">Unity · C# · HLSL</div>
         </div>
         <span class="card-number">002</span>
         <div class="card-arrow">
@@ -1093,14 +1106,14 @@
 
       <!-- Card 3 -->
       <div class="project-card">
-        <div class="card-bg card-bg-3">
-          <div class="card-pattern grid-pat"></div>
+        <div class="card-bg card-bg-3" style="background-image: url('Ah64_thumb.jpg'); background-size: cover; background-position: center;">
+          <div class="card-overlay"></div>
         </div>
         <div class="card-glow glow-warm"></div>
         <div class="card-content">
-          <p class="card-category">VFX — Embergen</p>
-          <h3 class="card-title">Igneum</h3>
-          <div class="card-meta">Embergen</div>
+          <p class="card-category">VFX — Fire Simulation</p>
+          <h3 class="card-title">Inferno<br/>Apache Down</h3>
+          <div class="card-meta">EmberGen · 3ds Max · After Effects</div>
         </div>
         <span class="card-number">003</span>
         <div class="card-arrow">
@@ -1117,9 +1130,9 @@
         </div>
         <div class="card-glow glow-blue"></div>
         <div class="card-content">
-          <p class="card-category">VFX — Ty Flow</p>
-          <h3 class="card-title">Destruction</h3>
-          <div class="card-meta">3ds Max · Ty Flow · V-Ray · After Effects</div>
+          <p class="card-category">Game Dev</p>
+          <h3 class="card-title">Void Garden</h3>
+          <div class="card-meta">Unreal 5 · Blueprint</div>
         </div>
         <span class="card-number">004</span>
         <div class="card-arrow">
@@ -1136,9 +1149,9 @@
         </div>
         <div class="card-glow glow-warm"></div>
         <div class="card-content">
-          <p class="card-category">VFX — Large Scale Simulations</p>
-          <h3 class="card-title">Oceans Sim</h3>
-          <div class="card-meta">3ds Max · Phoenix · Vray · After Effects</div>
+          <p class="card-category">VFX — Simulación</p>
+          <h3 class="card-title">Fracture Sim</h3>
+          <div class="card-meta">Houdini · RBD</div>
         </div>
         <span class="card-number">005</span>
         <div class="card-arrow">
@@ -1155,9 +1168,9 @@
         </div>
         <div class="card-glow glow-green"></div>
         <div class="card-content">
-          <p class="card-category">Motion Graphics</p>
-          <h3 class="card-title">ShowReel</h3>
-          <div class="card-meta">Unreal 5</div>
+          <p class="card-category">Game Dev</p>
+          <h3 class="card-title">Stasis Zero</h3>
+          <div class="card-meta">Unity · Shader Graph</div>
         </div>
         <span class="card-number">006</span>
         <div class="card-arrow">
@@ -1169,14 +1182,14 @@
 
       <!-- Card 7 -->
       <div class="project-card">
-        <div class="card-bg card-bg-7">
-          <div class="card-pattern dot-pat"></div>
+        <div class="card-bg card-bg-7" style="background-image: url('Car_close_Up.jpg'); background-size: cover; background-position: center;">
+          <div class="card-overlay"></div>
         </div>
-        <div class="card-glow glow-green"></div>
+        <div class="card-glow glow-warm"></div>
         <div class="card-content">
-          <p class="card-category">Other works</p>
-          <h3 class="card-title">ProdViz and Marketing</h3>
-          <div class="card-meta">3dsMax · Vray · After Effects</div>
+          <p class="card-category">Other Works</p>
+          <h3 class="card-title">ProdViz &amp;<br/>Marketing</h3>
+          <div class="card-meta">3ds Max · V-Ray · After Effects</div>
         </div>
         <span class="card-number">007</span>
         <div class="card-arrow">
@@ -1186,11 +1199,8 @@
         </div>
       </div>
 
-      
     </div>
   </section>
-
-  <!-- ABOUT -->
   <section id="about">
     <div class="about-left reveal">
       <div class="section-label">03 — About</div>
@@ -1198,8 +1208,8 @@
         <div class="about-photo-wrap">
           <img src="Profile_photo.jpg" class="about-photo" alt="Julen Salazar" />
         </div>
+        <h2>Crafting<br/><em>Chaos</em><br/>with Code.</h2>
       </div>
-      <h2>Crafting<br/><em>Chaos</em><br/>with Code.</h2>
       <p class="about-text">I'm <strong>Julen Salazar</strong>, a VFX artist and game developer specialised in creating visual experiences that fuse technique with narrative.</p>
       <p class="about-text">I work in the space where <strong>cinema and games</strong> converge — particles that tell stories, worlds that breathe, effects that give you chills.</p>
       <div class="skills-list">
@@ -1210,6 +1220,7 @@
         <span class="skill-tag">HLSL</span>
         <span class="skill-tag">3ds Max</span>
         <span class="skill-tag">V-Ray</span>
+        <span class="skill-tag">Python</span>
         <span class="skill-tag">Adobe Suite</span>
         <span class="skill-tag">C++</span>
         <span class="skill-tag">C#</span>
@@ -1319,11 +1330,13 @@
         images: []
       },
       {
-        title: "Pyroclastic<br/><em>Flow</em>",
-        category: "VFX — Fluids",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-        tools: ["Houdini", "Karma XPU"],
+        title: "Inferno<br/><em>Apache Down</em>",
+        category: "VFX — Fire Simulation",
+        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Three independent simulations, each paired with a different original soundtrack — same destruction, three completely different emotional registers.\n\nFour sequences total: three takedown animations and a timelapse of the burn.\n\nBest experienced with audio on.",
+        tools: ["EmberGen", "3ds Max", "After Effects"],
         vimeo: "",
+        videos: ["ah64_01.mp4", "ah64_02.mp4", "ah64_03.mp4", "ah64_04.mp4"],
+        videoLabels: ["Takedown I", "Takedown II", "Takedown III", "Timelapse"],
         images: []
       },
       {
@@ -1349,6 +1362,14 @@
         tools: ["Unity", "Shader Graph"],
         vimeo: "",
         images: []
+      },
+      {
+        title: "ProdViz &amp;<br/><em>Marketing</em>",
+        category: "Other Works",
+        description: "A curated selection of product visualisation and marketing pieces — automotive renders, jewellery, architectural visualisation and motion graphics. Work spanning broadcast, advertising and commercial clients.",
+        tools: ["3ds Max", "V-Ray", "After Effects"],
+        vimeo: "",
+        images: ["Car_1.jpg", "Car_2.jpg", "Car_close_Up.jpg"]
       }
     ];
 
@@ -1359,7 +1380,7 @@
       const p = projectData[index];
       document.getElementById('modalCategory').textContent = p.category;
       document.getElementById('modalTitle').innerHTML = p.title;
-      document.getElementById('modalDescription').textContent = p.description;
+      document.getElementById('modalDescription').innerHTML = p.description.replace(/\n\n/g, '<br/><br/>');
 
       const toolsEl = document.getElementById('modalTools');
       toolsEl.innerHTML = p.tools.map(t => `<span class="modal-tool-tag">${t}</span>`).join('');
@@ -1371,7 +1392,38 @@
 
       const slidesEl = document.getElementById('modalSlides');
       const navEl = document.getElementById('modalCarouselNav');
-      if (p.images.length > 0) {
+
+      // Support videos
+      if (p.videos && p.videos.length > 0) {
+        slidesEl.innerHTML = p.videos.map((vid, i) =>
+          `<div class="modal-slide ${i===0?'active':''}">
+            <video src="${vid}" controls preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>
+          </div>`
+        ).join('');
+        const labels = p.videoLabels || p.videos.map((_, i) => `Video ${i+1}`);
+        navEl.innerHTML = labels.map((label, i) =>
+          `<button class="modal-dot ${i===0?'active':''}" data-idx="${i}" style="width:auto;border-radius:0;padding:4px 10px;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--muted);">${label}</button>`
+        ).join('');
+        navEl.querySelectorAll('.modal-dot').forEach(dot => {
+          dot.addEventListener('click', () => {
+            // Pause all videos
+            slidesEl.querySelectorAll('video').forEach(v => v.pause());
+            slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
+            navEl.querySelectorAll('.modal-dot').forEach(d => {
+              d.classList.remove('active');
+              d.style.borderColor = 'var(--border)';
+              d.style.color = 'var(--muted)';
+            });
+            slidesEl.querySelectorAll('.modal-slide')[dot.dataset.idx].classList.add('active');
+            dot.classList.add('active');
+            dot.style.borderColor = 'var(--accent)';
+            dot.style.color = 'var(--accent)';
+          });
+        });
+        // Style first dot as active
+        const firstDot = navEl.querySelector('.modal-dot');
+        if (firstDot) { firstDot.style.borderColor = 'var(--accent)'; firstDot.style.color = 'var(--accent)'; }
+      } else if (p.images.length > 0) {
         slidesEl.innerHTML = p.images.map((img, i) =>
           `<div class="modal-slide ${i===0?'active':''}"><img src="${img}" alt=""/></div>`
         ).join('');
@@ -1396,17 +1448,20 @@
     }
 
     modalClose.addEventListener('click', () => {
+      document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
       overlay.classList.remove('open');
       document.body.style.overflow = '';
     });
     overlay.addEventListener('click', e => {
       if (e.target === overlay) {
+        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
         overlay.classList.remove('open');
         document.body.style.overflow = '';
       }
     });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
+        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
         overlay.classList.remove('open');
         document.body.style.overflow = '';
       }
