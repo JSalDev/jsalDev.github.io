@@ -942,7 +942,7 @@
       background: var(--bg);
       overflow: hidden;
     }
-    .modal-slide.active { display: block; }
+    .modal-slide.active { display: flex; flex-direction: column; }
     .modal-slide img {
       width: 100%;
       height: 100%;
@@ -1002,10 +1002,11 @@
       height: 100%;
       object-fit: cover;
     }
-    .modal-slide video {
+    .modal-slide iframe {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      border: none;
+      display: block;
     }
 
     /* FULLSCREEN IMAGE */
@@ -1640,7 +1641,7 @@
       {
         title: "Inferno<br/><em>Apache Down</em>",
         category: "VFX — Fire Simulation",
-        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Each simulation paired with a different original soundtrack — same destruction, three completely different emotional registers.\n\nBest experienced with audio on.",
+        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Original soundtrack composed to match the destruction sequence.\n\nAlso includes two timelapses of the burn — same fire, two different perspectives.\n\nBest experienced with audio on.",
         tools: ["EmberGen", "3ds Max", "After Effects"],
         vimeo: "",
         mediaSlides: [
