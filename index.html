@@ -1339,7 +1339,7 @@
 
       <!-- Card 3 -->
       <div class="project-card">
-        <div class="card-bg card-bg-3" style="background-image: url('Ah64_thumb.jpg'); background-size: cover; background-position: center;">
+        <div class="card-bg card-bg-3" style="background-image: url('Apache_Thumbnail.jpg'); background-size: cover; background-position: center;">
           <div class="card-overlay"></div>
         </div>
         <div class="card-glow glow-warm"></div>
@@ -1640,11 +1640,14 @@
       {
         title: "Inferno<br/><em>Apache Down</em>",
         category: "VFX — Fire Simulation",
-        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Three independent simulations, each paired with a different original soundtrack — same destruction, three completely different emotional registers.\n\nFour sequences total: three takedown animations and a timelapse of the burn.\n\nBest experienced with audio on.",
+        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Each simulation paired with a different original soundtrack — same destruction, three completely different emotional registers.\n\nBest experienced with audio on.",
         tools: ["EmberGen", "3ds Max", "After Effects"],
         vimeo: "",
-        videos: ["ah64_01.mp4", "ah64_02.mp4", "ah64_03.mp4", "ah64_04.mp4"],
-        videoLabels: ["Takedown I", "Takedown II", "Takedown III", "Timelapse"],
+        mediaSlides: [
+          { type: "vimeo", id: "1192877885", label: "Takedown" },
+          { type: "youtube", id: "F8jzrwrSyEQ", label: "Timelapse I" },
+          { type: "youtube", id: "qGL8FI6MT1s", label: "Timelapse II" }
+        ],
         images: []
       },
       {
@@ -1728,7 +1731,18 @@
       const slidesEl = document.getElementById('modalSlides');
       const navEl = document.getElementById('modalCarouselNav');
 
-      if (p.videos && p.videos.length > 0) {
+      if (p.mediaSlides && p.mediaSlides.length > 0) {
+        slidesEl.innerHTML = p.mediaSlides.map((m, i) => {
+          let embedHtml = '';
+          if (m.type === 'vimeo') {
+            embedHtml = `<iframe src="https://player.vimeo.com/video/${m.id}?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+          } else if (m.type === 'youtube') {
+            embedHtml = `<iframe src="https://www.youtube.com/embed/${m.id}?rel=0&modestbranding=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+          }
+          return `<div class="modal-slide ${i===0?'active':''}">${embedHtml}</div>`;
+        }).join('');
+        buildCarouselNav(slidesEl, navEl, p.mediaSlides.length, p.mediaSlides.map(m => m.label));
+      } else if (p.videos && p.videos.length > 0) {
         slidesEl.innerHTML = p.videos.map((vid, i) =>
           `<div class="modal-slide ${i===0?'active':''}">
             <video src="${vid}" controls preload="metadata"></video>
@@ -1761,24 +1775,19 @@
       document.body.style.overflow = 'hidden';
     }
 
-    modalClose.addEventListener('click', () => {
+    function closeModal() {
       document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
+      document.querySelectorAll('#modalSlides iframe').forEach(f => { f.src = f.src; });
       overlay.classList.remove('open');
       document.body.style.overflow = '';
-    });
+    }
+
+    modalClose.addEventListener('click', closeModal);
     overlay.addEventListener('click', e => {
-      if (e.target === overlay) {
-        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-      }
+      if (e.target === overlay) closeModal();
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-      }
+      if (e.key === 'Escape') closeModal();
     });
 
     document.querySelectorAll('.project-card').forEach((card, i) => {
@@ -1987,11 +1996,10 @@
         // iOS — show banner, wait for tap
         const banner = document.getElementById('ios-gyro-banner');
         banner.style.display = 'flex';
-     } else if (typeof DeviceOrientationEvent !== 'undefined') {
-  // Android — show banner too, more reliable
-  const banner = document.getElementById('ios-gyro-banner');
-  banner.style.display = 'flex';
-}
+      } else if (typeof DeviceOrientationEvent !== 'undefined') {
+        // Android — start immediately
+        setTimeout(startGyro, 400);
+      }
     })();
 
   </script>
