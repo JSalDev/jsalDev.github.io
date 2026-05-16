@@ -1095,6 +1095,80 @@
       cursor: zoom-in;
     }
 
+    /* HERO PARALLAX LAYERS */
+    .hero-tag, h1, .hero-sub, .hero-scroll, .hero-line {
+      will-change: transform;
+    }
+    #hero .hero-tag,
+    #hero h1,
+    #hero .hero-sub {
+      transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    #hero .hero-line {
+      transition: transform 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+
+    /* CARD HOLO SHEEN */
+    .card-sheen {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 3;
+    }
+    .project-card:hover .card-sheen { opacity: 1; }
+    .project-card {
+      transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .card-bg, .card-content {
+      will-change: transform;
+      transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+
+    /* iOS GYRO PERMISSION BANNER */
+    #ios-gyro-banner {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      background: rgba(22,22,20,0.95);
+      border: 1px solid rgba(200,184,154,0.25);
+      padding: 14px 20px;
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      display: none;
+      align-items: center;
+      gap: 16px;
+      white-space: nowrap;
+      backdrop-filter: blur(12px);
+    }
+    #ios-gyro-banner button {
+      padding: 6px 16px;
+      background: transparent;
+      border: 1px solid rgba(200,184,154,0.4);
+      color: var(--accent);
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #ios-gyro-banner button:hover { background: rgba(200,184,154,0.08); }
+    #ios-gyro-banner .banner-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0 0 0 8px;
+    }
+
     /* MODAL — MOBILE */
     @media (max-width: 600px) {
       .modal-overlay {
@@ -1131,6 +1205,13 @@
   </style>
 </head>
 <body>
+
+  <!-- iOS GYRO PERMISSION BANNER -->
+  <div id="ios-gyro-banner">
+    <span>Enable motion for depth effect</span>
+    <button onclick="requestGyroPermission()">Enable</button>
+    <button class="banner-close" onclick="document.getElementById('ios-gyro-banner').style.display='none'">✕</button>
+  </div>
 
   <!-- FULLSCREEN IMAGE OVERLAY -->
   <div class="img-fullscreen-overlay" id="imgFullscreen">
@@ -1222,6 +1303,7 @@
           <div class="card-pattern grid-pat"></div>
         </div>
         <div class="card-glow glow-green"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">VFX — Partículas</p>
           <h3 class="card-title">Nebula<br/>Destruction</h3>
@@ -1241,6 +1323,7 @@
           <div class="card-pattern dot-pat"></div>
         </div>
         <div class="card-glow glow-warm"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Game Dev</p>
           <h3 class="card-title">Echo Protocol</h3>
@@ -1260,6 +1343,7 @@
           <div class="card-overlay"></div>
         </div>
         <div class="card-glow glow-warm"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">VFX — Fire Simulation</p>
           <h3 class="card-title">Inferno<br/>Apache Down</h3>
@@ -1279,6 +1363,7 @@
           <div class="card-pattern dot-pat"></div>
         </div>
         <div class="card-glow glow-blue"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Game Dev</p>
           <h3 class="card-title">Void Garden</h3>
@@ -1298,6 +1383,7 @@
           <div class="card-pattern grid-pat"></div>
         </div>
         <div class="card-glow glow-warm"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">VFX — Simulación</p>
           <h3 class="card-title">Fracture Sim</h3>
@@ -1317,6 +1403,7 @@
           <div class="card-pattern dot-pat"></div>
         </div>
         <div class="card-glow glow-green"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Game Dev</p>
           <h3 class="card-title">Stasis Zero</h3>
@@ -1336,6 +1423,7 @@
           <div class="card-overlay"></div>
         </div>
         <div class="card-glow glow-warm"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Other Works</p>
           <h3 class="card-title">ProdViz &amp;<br/>Marketing</h3>
@@ -1765,6 +1853,146 @@
         tab.classList.add('active');
       });
     });
+
+    // ============================================================
+    // GYRO / MOUSE PARALLAX
+    // ============================================================
+    let gyroEnabled = false;
+    let gyroBaseB = null, gyroBaseG = null;
+    let parallaxX = 0, parallaxY = 0;
+    let parallaxTargetX = 0, parallaxTargetY = 0;
+
+    const heroEl      = document.getElementById('hero');
+    const heroTag     = heroEl.querySelector('.hero-tag');
+    const heroH1      = heroEl.querySelector('h1');
+    const heroSub     = heroEl.querySelector('.hero-sub');
+    const heroLineEl  = heroEl.querySelector('.hero-line');
+
+    function applyHeroParallax(nx, ny) {
+      heroTag.style.transform    = `translate(${nx * 5}px, ${ny * 4}px)`;
+      heroH1.style.transform     = `translate(${nx * 12}px, ${ny * 10}px)`;
+      heroSub.style.transform    = `translate(${nx * 7}px, ${ny * 6}px)`;
+      heroLineEl.style.transform = `translateY(${ny * 16}px)`;
+    }
+
+    // Mouse fallback — always active on desktop
+    heroEl.addEventListener('mousemove', e => {
+      if (gyroEnabled) return;
+      const r = heroEl.getBoundingClientRect();
+      parallaxTargetX = (e.clientX - r.left) / r.width  * 2 - 1;
+      parallaxTargetY = (e.clientY - r.top)  / r.height * 2 - 1;
+    });
+    heroEl.addEventListener('mouseleave', () => {
+      if (gyroEnabled) return;
+      parallaxTargetX = 0;
+      parallaxTargetY = 0;
+    });
+
+    // Smooth lerp loop for hero
+    function heroLoop() {
+      parallaxX += (parallaxTargetX - parallaxX) * 0.1;
+      parallaxY += (parallaxTargetY - parallaxY) * 0.1;
+      applyHeroParallax(parallaxX, parallaxY);
+      requestAnimationFrame(heroLoop);
+    }
+    heroLoop();
+
+    // ============================================================
+    // CARD HOLO TILT + SHEEN
+    // ============================================================
+    document.querySelectorAll('.project-card').forEach(card => {
+      const bg      = card.querySelector('.card-bg');
+      const content = card.querySelector('.card-content');
+      const sheen   = card.querySelector('.card-sheen');
+
+      function onCardMove(nx, ny) {
+        const rx = ny * 12, ry = -nx * 12;
+        card.style.transform    = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        if (bg)      bg.style.transform      = `translate(${nx * 5}px, ${ny * 5}px)`;
+        if (content) content.style.transform = `translate(${nx * 10}px, ${ny * 8}px)`;
+        if (sheen) {
+          const pct = ((nx + 1) / 2 * 100).toFixed(1);
+          sheen.style.background = `linear-gradient(105deg, transparent ${pct - 20}%, rgba(200,184,154,0.08) ${pct}%, transparent ${+pct + 20}%)`;
+        }
+      }
+      function resetCard() {
+        card.style.transform    = '';
+        if (bg)      bg.style.transform      = '';
+        if (content) content.style.transform = '';
+        if (sheen)   sheen.style.background  = '';
+      }
+
+      // Desktop mouse
+      card.addEventListener('mousemove', e => {
+        const r  = card.getBoundingClientRect();
+        const nx = (e.clientX - r.left) / r.width  * 2 - 1;
+        const ny = (e.clientY - r.top)  / r.height * 2 - 1;
+        onCardMove(nx, ny);
+      });
+      card.addEventListener('mouseleave', resetCard);
+
+      // Mobile touch tilt — driven by gyro via global values
+      card._holoMove = onCardMove;
+      card._holoReset = resetCard;
+    });
+
+    // ============================================================
+    // GYROSCOPE (mobile)
+    // ============================================================
+    function handleOrientation(e) {
+      if (!gyroEnabled) return;
+      if (gyroBaseB === null) { gyroBaseB = e.beta; gyroBaseG = e.gamma; }
+      const db = Math.max(-40, Math.min(40, e.beta  - gyroBaseB));
+      const dg = Math.max(-40, Math.min(40, e.gamma - gyroBaseG));
+      const nx = dg / 40;
+      const ny = db / 40;
+
+      // Hero
+      parallaxTargetX = nx;
+      parallaxTargetY = ny;
+
+      // Cards — apply to whichever is in viewport
+      document.querySelectorAll('.project-card').forEach(card => {
+        const r = card.getBoundingClientRect();
+        const inView = r.top < window.innerHeight && r.bottom > 0;
+        if (inView && card._holoMove) card._holoMove(nx, ny);
+        else if (card._holoReset)     card._holoReset();
+      });
+    }
+
+    function startGyro() {
+      gyroEnabled = true;
+      gyroBaseB = null; gyroBaseG = null;
+      window.addEventListener('deviceorientation', handleOrientation);
+      document.getElementById('ios-gyro-banner').style.display = 'none';
+    }
+
+    function requestGyroPermission() {
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(state => {
+          if (state === 'granted') startGyro();
+        }).catch(() => {});
+      } else {
+        startGyro();
+      }
+    }
+
+    // Auto-detect on load
+    (function detectGyro() {
+      const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+      if (!isTouch) return;
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS — show banner, wait for tap
+        const banner = document.getElementById('ios-gyro-banner');
+        banner.style.display = 'flex';
+      } else if (typeof DeviceOrientationEvent !== 'undefined') {
+        // Android — start immediately
+        setTimeout(startGyro, 400);
+      }
+    })();
+
   </script>
 </body>
 </html>
