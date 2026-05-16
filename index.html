@@ -1987,10 +1987,11 @@
         // iOS — show banner, wait for tap
         const banner = document.getElementById('ios-gyro-banner');
         banner.style.display = 'flex';
-      } else if (typeof DeviceOrientationEvent !== 'undefined') {
-        // Android — start immediately
-        setTimeout(startGyro, 400);
-      }
+     } else if (typeof DeviceOrientationEvent !== 'undefined') {
+  // Android — show banner too, more reliable
+  const banner = document.getElementById('ios-gyro-banner');
+  banner.style.display = 'flex';
+}
     })();
 
   </script>
