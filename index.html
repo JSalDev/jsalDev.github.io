@@ -942,7 +942,13 @@
       background: var(--bg);
       overflow: hidden;
     }
-    .modal-slide.active { display: block; }
+    .modal-slide.active { display: flex; flex-direction: column; }
+    .modal-slide iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
     .modal-slide img {
       width: 100%;
       height: 100%;
@@ -1095,7 +1101,7 @@
   <section id="showreel">
     <div class="section-label reveal">01 — Showreel 2026</div>
     <div class="reel-container reveal">
-     <iframe title="vimeo-player" src="https://player.vimeo.com/video/1193036848?h=1e51cfab68" width="640" height="360" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"   allowfullscreen></iframe>
+      <iframe src="https://player.vimeo.com/video/1193036848?badge=0&autopause=0&loop=1&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Julen Salazar — VFX Showreel 2026"></iframe>
     </div>
     <script src="https://player.vimeo.com/api/player.js"></script>
   </section>
@@ -1175,13 +1181,14 @@
 
       <!-- Card 3 -->
       <div class="project-card">
-        <div class="card-bg card-bg-3" style="background-image: url('Ah64_thumb.jpg'); background-size: cover; background-position: center;">
+        <div class="card-bg card-bg-3" style="background-image: url('Apache_Thumbnail.jpg'); background-size: cover; background-position: center;">
           <div class="card-overlay"></div>
         </div>
         <div class="card-glow glow-warm"></div>
+        <div class="card-sheen"></div>
         <div class="card-content">
-          <p class="card-category">VFX — Fire Simulation</p>
-          <h3 class="card-title">Inferno<br/>Apache Down</h3>
+          <p class="card-category">VFX — EmberGen Studies</p>
+          <h3 class="card-title">Ignition<br/><em>EmberGen Studies</em></h3>
           <div class="card-meta">EmberGen · 3ds Max · After Effects</div>
         </div>
         <span class="card-number">003</span>
@@ -1426,13 +1433,31 @@
         images: []
       },
       {
-        title: "Inferno<br/><em>Apache Down</em>",
-        category: "VFX — Fire Simulation",
-        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Three independent simulations, each paired with a different original soundtrack — same destruction, three completely different emotional registers.\n\nFour sequences total: three takedown animations and a timelapse of the burn.\n\nBest experienced with audio on.",
+        title: "Ignition<br/><em>EmberGen Studies</em>",
+        category: "VFX — EmberGen Studies",
+        description: "An ongoing series of fire and destruction simulations built in EmberGen — each piece a study in combustion behaviour, fuel dynamics, and volumetric motion.\n\nBest experienced with audio on.",
         tools: ["EmberGen", "3ds Max", "After Effects"],
         vimeo: "",
-        videos: ["ah64_01.mp4", "ah64_02.mp4", "ah64_03.mp4", "ah64_04.mp4"],
-        videoLabels: ["Takedown I", "Takedown II", "Takedown III", "Timelapse"],
+        mediaSlides: [
+          {
+            type: "vimeo",
+            id: "1192877885",
+            label: "Apache Down",
+            description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Original soundtrack composed to match the destruction sequence."
+          },
+          {
+            type: "vimeo",
+            id: "1193026758",
+            label: "Consumed Sedan",
+            description: "Consumed sedan.\n\nProcedural combustion and oscillators study — fuel mapping via 3ds Max VertexPaint, simulation and rendering in EmberGen, post production in After Effects.\n\nModel Credits: \"Abandoned Generic Sedan 1\" by Loïc Norgeot (skfb.ly/psHvC)."
+          },
+          {
+            type: "vimeo",
+            id: "",
+            label: "Ignis",
+            description: "Coming soon."
+          }
+        ],
         images: []
       },
       {
@@ -1472,18 +1497,22 @@
     const overlay = document.getElementById('modalOverlay');
     const modalClose = document.getElementById('modalClose');
 
-    function buildCarouselNav(slidesEl, navEl, total, labels) {
+    function buildCarouselNav(slidesEl, navEl, total, labels, descriptions) {
       let current = 0;
+      const descEl = document.getElementById('modalDescription');
 
       function goTo(idx) {
-        // Pause any videos
         slidesEl.querySelectorAll('video').forEach(v => v.pause());
+        slidesEl.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
         slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
         current = (idx + total) % total;
         slidesEl.querySelectorAll('.modal-slide')[current].classList.add('active');
         const labelText = labels ? labels[current] : `${current + 1} / ${total}`;
         const counter = navEl.querySelector('.modal-slide-counter');
         if (counter) counter.innerHTML = `<span>${labelText}</span>`;
+        if (descriptions && descriptions[current] && descEl) {
+          descEl.innerHTML = descriptions[current].replace(/\n\n/g, '<br/><br/>');
+        }
       }
 
       const firstLabel = labels ? labels[0] : `1 / ${total}`;
@@ -1516,7 +1545,28 @@
       const slidesEl = document.getElementById('modalSlides');
       const navEl = document.getElementById('modalCarouselNav');
 
-      if (p.videos && p.videos.length > 0) {
+      if (p.mediaSlides && p.mediaSlides.length > 0) {
+        const activeSlides = p.mediaSlides.filter(m => m.id);
+        slidesEl.innerHTML = activeSlides.map((m, i) => {
+          let embedHtml = '';
+          if (m.type === 'vimeo') {
+            embedHtml = `<iframe src="https://player.vimeo.com/video/${m.id}?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+          } else if (m.type === 'youtube') {
+            embedHtml = `<iframe src="https://www.youtube.com/embed/${m.id}?rel=0&modestbranding=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+          }
+          return `<div class="modal-slide ${i===0?'active':''}">${embedHtml}</div>`;
+        }).join('');
+        const descEl = document.getElementById('modalDescription');
+        if (activeSlides[0].description) {
+          descEl.innerHTML = activeSlides[0].description.replace(/\n\n/g, '<br/><br/>');
+        }
+        buildCarouselNav(
+          slidesEl, navEl,
+          activeSlides.length,
+          activeSlides.map(m => m.label),
+          activeSlides.map(m => m.description || p.description)
+        );
+      } else if (p.videos && p.videos.length > 0) {
         slidesEl.innerHTML = p.videos.map((vid, i) =>
           `<div class="modal-slide ${i===0?'active':''}">
             <video src="${vid}" controls preload="metadata"></video>
@@ -1537,25 +1587,16 @@
       document.body.style.overflow = 'hidden';
     }
 
-    modalClose.addEventListener('click', () => {
+    function closeModal() {
       document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
+      document.querySelectorAll('#modalSlides iframe').forEach(f => { f.src = f.src; });
       overlay.classList.remove('open');
       document.body.style.overflow = '';
-    });
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) {
-        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-      }
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-      }
-    });
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
     document.querySelectorAll('.project-card').forEach((card, i) => {
       card.addEventListener('click', () => openModal(i));
