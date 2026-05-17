@@ -821,6 +821,37 @@
         padding: 24px 20px;
       }
       .footer-links { gap: 16px; }
+
+      /* MODAL — MOBILE */
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+      .modal-container {
+        max-height: 92vh;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+      }
+      .modal-inner {
+        grid-template-columns: 1fr;
+        min-height: unset;
+      }
+      .modal-left {
+        padding: 48px 24px 24px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .modal-right {
+        padding: 24px;
+      }
+      .modal-close {
+        top: 12px;
+        right: 12px;
+      }
+      .modal-title {
+        font-size: clamp(24px, 8vw, 36px);
+      }
     }
     /* PROJECT MODAL */
     .modal-overlay {
