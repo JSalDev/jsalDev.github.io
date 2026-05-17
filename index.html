@@ -942,7 +942,7 @@
       background: var(--bg);
       overflow: hidden;
     }
-    .modal-slide.active { display: flex; flex-direction: column; }
+    .modal-slide.active { display: block; }
     .modal-slide img {
       width: 100%;
       height: 100%;
@@ -1002,11 +1002,10 @@
       height: 100%;
       object-fit: cover;
     }
-    .modal-slide iframe {
+    .modal-slide video {
       width: 100%;
       height: 100%;
-      border: none;
-      display: block;
+      object-fit: cover;
     }
 
     /* FULLSCREEN IMAGE */
@@ -1046,180 +1045,18 @@
       transition: all 0.2s;
     }
     .img-fullscreen-close:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* Fullscreen prev/next arrows */
-    .fs-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.15);
-      color: var(--muted);
-      width: 48px; height: 48px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
-      z-index: 10;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .fs-arrow:hover { border-color: var(--accent); color: var(--accent); }
-    .fs-prev { left: 24px; }
-    .fs-next { right: 24px; }
-    @media (max-width: 600px) {
-      .fs-prev { left: 12px; }
-      .fs-next { right: 12px; }
-    }
-
-    /* Zoom hint on modal images — desktop only */
-    .modal-slide-img-wrap {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      cursor: zoom-in;
-    }
-    .modal-slide-img-wrap .zoom-hint {
-      position: absolute;
-      bottom: 10px; right: 10px;
-      width: 30px; height: 30px;
-      background: rgba(0,0,0,0.55);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-    }
-    .modal-slide:hover .zoom-hint { opacity: 1; }
-    .zoom-hint svg { display: block; }
     .modal-slide img {
       cursor: zoom-in;
-    }
-
-    /* HERO PARALLAX LAYERS */
-    .hero-tag, h1, .hero-sub, .hero-scroll, .hero-line {
-      will-change: transform;
-    }
-    #hero .hero-tag,
-    #hero h1,
-    #hero .hero-sub {
-      transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
-    }
-    #hero .hero-line {
-      transition: transform 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
-    }
-
-    /* CARD HOLO SHEEN */
-    .card-sheen {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 3;
-    }
-    .project-card:hover .card-sheen { opacity: 1; }
-    .project-card {
-      transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
-    }
-    .card-bg, .card-content {
-      will-change: transform;
-      transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
-    }
-
-    /* iOS GYRO PERMISSION BANNER */
-    #ios-gyro-banner {
-      display: none;
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 500;
-      background: rgba(22,22,20,0.95);
-      border: 1px solid rgba(200,184,154,0.25);
-      padding: 14px 20px;
-      font-family: var(--ff-mono);
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      display: none;
-      align-items: center;
-      gap: 16px;
-      white-space: nowrap;
-      backdrop-filter: blur(12px);
-    }
-    #ios-gyro-banner button {
-      padding: 6px 16px;
-      background: transparent;
-      border: 1px solid rgba(200,184,154,0.4);
-      color: var(--accent);
-      font-family: var(--ff-mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    #ios-gyro-banner button:hover { background: rgba(200,184,154,0.08); }
-    #ios-gyro-banner .banner-close {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 14px;
-      cursor: pointer;
-      padding: 0 0 0 8px;
-    }
-
-    /* MODAL — MOBILE */
-    @media (max-width: 600px) {
-      .modal-overlay {
-        padding: 0;
-        align-items: flex-end;
-      }
-      .modal-container {
-        max-height: 92vh;
-        border-bottom: none;
-        border-left: none;
-        border-right: none;
-      }
-      .modal-inner {
-        grid-template-columns: 1fr;
-        min-height: unset;
-      }
-      .modal-left {
-        padding: 48px 24px 24px;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-      .modal-right {
-        padding: 24px;
-      }
-      .modal-close {
-        top: 12px;
-        right: 12px;
-      }
-      .modal-title {
-        font-size: clamp(24px, 8vw, 36px);
-      }
     }
 
   </style>
 </head>
 <body>
 
-  <!-- iOS GYRO PERMISSION BANNER -->
-  <div id="ios-gyro-banner">
-    <span>Enable motion for depth effect</span>
-    <button onclick="requestGyroPermission()">Enable</button>
-    <button class="banner-close" onclick="document.getElementById('ios-gyro-banner').style.display='none'">✕</button>
-  </div>
-
   <!-- FULLSCREEN IMAGE OVERLAY -->
   <div class="img-fullscreen-overlay" id="imgFullscreen">
     <button class="img-fullscreen-close" id="imgFullscreenClose">✕</button>
-    <button class="fs-arrow fs-prev" id="fsPrev">←</button>
     <img id="imgFullscreenImg" src="" alt="" />
-    <button class="fs-arrow fs-next" id="fsNext">→</button>
   </div>
 
   <div class="cursor" id="cursor"></div>
@@ -1258,7 +1095,7 @@
   <section id="showreel">
     <div class="section-label reveal">01 — Showreel 2026</div>
     <div class="reel-container reveal">
-      <iframe src="https://vimeo.com/1193036848?share=copy&fl=sv&fe=ci;badge=0&amp;autopause=0&amp;loop=1&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Julen Salazar — VFX Showreel 2026"></iframe>
+      <iframe src="https://player.vimeo.com/video/1193036848?badge=0&autopause=0&loop=1&player_id=0&app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="Julen Salazar — VFX Showreel 2026"></iframe>
     </div>
     <script src="https://player.vimeo.com/api/player.js"></script>
   </section>
@@ -1304,7 +1141,6 @@
           <div class="card-pattern grid-pat"></div>
         </div>
         <div class="card-glow glow-green"></div>
-        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">VFX — Partículas</p>
           <h3 class="card-title">Nebula<br/>Destruction</h3>
@@ -1324,7 +1160,6 @@
           <div class="card-pattern dot-pat"></div>
         </div>
         <div class="card-glow glow-warm"></div>
-        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Game Dev</p>
           <h3 class="card-title">Echo Protocol</h3>
@@ -1340,14 +1175,13 @@
 
       <!-- Card 3 -->
       <div class="project-card">
-        <div class="card-bg card-bg-3" style="background-image: url('Apache_Thumbnail.jpg'); background-size: cover; background-position: center;">
+        <div class="card-bg card-bg-3" style="background-image: url('Ah64_thumb.jpg'); background-size: cover; background-position: center;">
           <div class="card-overlay"></div>
         </div>
         <div class="card-glow glow-warm"></div>
-        <div class="card-sheen"></div>
         <div class="card-content">
-          <p class="card-category">VFX — EmberGen Studies</p>
-          <h3 class="card-title">Ignition<br/><em>EmberGen Studies</em></h3>
+          <p class="card-category">VFX — Fire Simulation</p>
+          <h3 class="card-title">Inferno<br/>Apache Down</h3>
           <div class="card-meta">EmberGen · 3ds Max · After Effects</div>
         </div>
         <span class="card-number">003</span>
@@ -1364,7 +1198,6 @@
           <div class="card-pattern dot-pat"></div>
         </div>
         <div class="card-glow glow-blue"></div>
-        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Game Dev</p>
           <h3 class="card-title">Void Garden</h3>
@@ -1384,7 +1217,6 @@
           <div class="card-pattern grid-pat"></div>
         </div>
         <div class="card-glow glow-warm"></div>
-        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">VFX — Simulación</p>
           <h3 class="card-title">Fracture Sim</h3>
@@ -1404,7 +1236,6 @@
           <div class="card-pattern dot-pat"></div>
         </div>
         <div class="card-glow glow-green"></div>
-        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Game Dev</p>
           <h3 class="card-title">Stasis Zero</h3>
@@ -1424,7 +1255,6 @@
           <div class="card-overlay"></div>
         </div>
         <div class="card-glow glow-warm"></div>
-        <div class="card-sheen"></div>
         <div class="card-content">
           <p class="card-category">Other Works</p>
           <h3 class="card-title">ProdViz &amp;<br/>Marketing</h3>
@@ -1550,74 +1380,31 @@
   </footer>
 
   <script>
-    // Fullscreen image — with swipe, arrow-key, and multi-image nav
+    // Fullscreen image
     const imgFullscreen = document.getElementById('imgFullscreen');
     const imgFullscreenImg = document.getElementById('imgFullscreenImg');
     const imgFullscreenClose = document.getElementById('imgFullscreenClose');
 
-    let fsImages = [];   // current set of image srcs
-    let fsIndex  = 0;    // which one is open
-
-    function openFullscreen(src, imageList) {
-      fsImages = imageList || [src];
-      fsIndex  = fsImages.indexOf(src);
-      if (fsIndex < 0) fsIndex = 0;
-      imgFullscreenImg.src = fsImages[fsIndex];
+    function openFullscreen(src) {
+      imgFullscreenImg.src = src;
       imgFullscreen.classList.add('open');
-      updateFsArrows();
     }
     function closeFullscreen() {
       imgFullscreen.classList.remove('open');
       imgFullscreenImg.src = '';
-      fsImages = [];
-    }
-    function fsNav(dir) {
-      if (fsImages.length < 2) return;
-      fsIndex = (fsIndex + dir + fsImages.length) % fsImages.length;
-      imgFullscreenImg.style.opacity = '0';
-      setTimeout(() => {
-        imgFullscreenImg.src = fsImages[fsIndex];
-        imgFullscreenImg.style.opacity = '1';
-      }, 150);
-    }
-    function updateFsArrows() {
-      const show = fsImages.length > 1;
-      document.getElementById('fsPrev').style.display = show ? 'flex' : 'none';
-      document.getElementById('fsNext').style.display = show ? 'flex' : 'none';
     }
 
     imgFullscreenClose.addEventListener('click', closeFullscreen);
-    document.getElementById('fsPrev').addEventListener('click', e => { e.stopPropagation(); fsNav(-1); });
-    document.getElementById('fsNext').addEventListener('click', e => { e.stopPropagation(); fsNav(1); });
     imgFullscreen.addEventListener('click', e => {
       if (e.target === imgFullscreen) closeFullscreen();
     });
-
-    // Keyboard: Escape closes, arrows navigate
     document.addEventListener('keydown', e => {
-      if (!imgFullscreen.classList.contains('open')) return;
-      if (e.key === 'Escape')      closeFullscreen();
-      if (e.key === 'ArrowRight')  fsNav(1);
-      if (e.key === 'ArrowLeft')   fsNav(-1);
+      if (e.key === 'Escape') closeFullscreen();
     });
 
-    // Touch swipe
-    let fsTouchX = null;
-    imgFullscreen.addEventListener('touchstart', e => { fsTouchX = e.touches[0].clientX; }, { passive: true });
-    imgFullscreen.addEventListener('touchend', e => {
-      if (fsTouchX === null) return;
-      const dx = e.changedTouches[0].clientX - fsTouchX;
-      if (Math.abs(dx) > 40) fsNav(dx < 0 ? 1 : -1);
-      fsTouchX = null;
-    });
-
-    // Delegate click on modal images — pass the full image list for that project
+    // Delegate click on modal images
     document.getElementById('modalSlides').addEventListener('click', e => {
-      const img = e.target.closest('.modal-slide-img-wrap') ? e.target.closest('.modal-slide-img-wrap').querySelector('img') : (e.target.tagName === 'IMG' ? e.target : null);
-      if (img) {
-        const allImgs = Array.from(document.querySelectorAll('#modalSlides img')).map(i => i.src);
-        openFullscreen(img.src, allImgs);
-      }
+      if (e.target.tagName === 'IMG') openFullscreen(e.target.src);
     });
 
     // Project Modal
@@ -1639,31 +1426,13 @@
         images: []
       },
       {
-        title: "Ignition<br/><em>EmberGen Studies</em>",
-        category: "VFX — EmberGen Studies",
-        description: "An ongoing series of fire and destruction simulations built in EmberGen — each piece a study in combustion behaviour, fuel dynamics, and volumetric motion.\n\nBest experienced with audio on.",
+        title: "Inferno<br/><em>Apache Down</em>",
+        category: "VFX — Fire Simulation",
+        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Three independent simulations, each paired with a different original soundtrack — same destruction, three completely different emotional registers.\n\nFour sequences total: three takedown animations and a timelapse of the burn.\n\nBest experienced with audio on.",
         tools: ["EmberGen", "3ds Max", "After Effects"],
         vimeo: "",
-        mediaSlides: [
-          {
-            type: "vimeo",
-            id: "1192877885",
-            label: "Apache Down",
-            description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Original soundtrack composed to match the destruction sequence."
-          },
-          {
-            type: "vimeo",
-            id: "1193026758",
-            label: "Consumed Sedan",
-            description: "Consumed sedan.\n\nProcedural combustion and oscillators study — fuel mapping via 3ds Max VertexPaint, simulation and rendering in EmberGen, post production in After Effects.\n\nModel Credits: \"Abandoned Generic Sedan 1\" by Loïc Norgeot (skfb.ly/psHvC)."
-          },
-          {
-            type: "vimeo",
-            id: "",
-            label: "Ignis",
-            description: "Coming soon."
-          }
-        ],
+        videos: ["ah64_01.mp4", "ah64_02.mp4", "ah64_03.mp4", "ah64_04.mp4"],
+        videoLabels: ["Takedown I", "Takedown II", "Takedown III", "Timelapse"],
         images: []
       },
       {
@@ -1703,22 +1472,18 @@
     const overlay = document.getElementById('modalOverlay');
     const modalClose = document.getElementById('modalClose');
 
-    function buildCarouselNav(slidesEl, navEl, total, labels, descriptions) {
+    function buildCarouselNav(slidesEl, navEl, total, labels) {
       let current = 0;
-      const descEl = document.getElementById('modalDescription');
 
       function goTo(idx) {
+        // Pause any videos
         slidesEl.querySelectorAll('video').forEach(v => v.pause());
-        slidesEl.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
         slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
         current = (idx + total) % total;
         slidesEl.querySelectorAll('.modal-slide')[current].classList.add('active');
         const labelText = labels ? labels[current] : `${current + 1} / ${total}`;
         const counter = navEl.querySelector('.modal-slide-counter');
         if (counter) counter.innerHTML = `<span>${labelText}</span>`;
-        if (descriptions && descriptions[current] && descEl) {
-          descEl.innerHTML = descriptions[current].replace(/\n\n/g, '<br/><br/>');
-        }
       }
 
       const firstLabel = labels ? labels[0] : `1 / ${total}`;
@@ -1751,29 +1516,7 @@
       const slidesEl = document.getElementById('modalSlides');
       const navEl = document.getElementById('modalCarouselNav');
 
-      if (p.mediaSlides && p.mediaSlides.length > 0) {
-        const activeSlides = p.mediaSlides.filter(m => m.id);
-        slidesEl.innerHTML = activeSlides.map((m, i) => {
-          let embedHtml = '';
-          if (m.type === 'vimeo') {
-            embedHtml = `<iframe src="https://player.vimeo.com/video/${m.id}?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-          } else if (m.type === 'youtube') {
-            embedHtml = `<iframe src="https://www.youtube.com/embed/${m.id}?rel=0&modestbranding=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-          }
-          return `<div class="modal-slide ${i===0?'active':''}">${embedHtml}</div>`;
-        }).join('');
-        // Set first slide description
-        const descEl = document.getElementById('modalDescription');
-        if (activeSlides[0].description) {
-          descEl.innerHTML = activeSlides[0].description.replace(/\n\n/g, '<br/><br/>');
-        }
-        buildCarouselNav(
-          slidesEl, navEl,
-          activeSlides.length,
-          activeSlides.map(m => m.label),
-          activeSlides.map(m => m.description || p.description)
-        );
-      } else if (p.videos && p.videos.length > 0) {
+      if (p.videos && p.videos.length > 0) {
         slidesEl.innerHTML = p.videos.map((vid, i) =>
           `<div class="modal-slide ${i===0?'active':''}">
             <video src="${vid}" controls preload="metadata"></video>
@@ -1782,19 +1525,7 @@
         buildCarouselNav(slidesEl, navEl, p.videos.length, p.videoLabels || null);
       } else if (p.images && p.images.length > 0) {
         slidesEl.innerHTML = p.images.map((img, i) =>
-          `<div class="modal-slide ${i===0?'active':''}">
-            <div class="modal-slide-img-wrap">
-              <img src="${img}" alt=""/>
-              <div class="zoom-hint">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="5.5" cy="5.5" r="4" stroke="#c8b89a" stroke-width="1.2"/>
-                  <line x1="8.5" y1="8.5" x2="13" y2="13" stroke="#c8b89a" stroke-width="1.2" stroke-linecap="round"/>
-                  <line x1="5.5" y1="3.5" x2="5.5" y2="7.5" stroke="#c8b89a" stroke-width="1.2" stroke-linecap="round"/>
-                  <line x1="3.5" y1="5.5" x2="7.5" y2="5.5" stroke="#c8b89a" stroke-width="1.2" stroke-linecap="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>`
+          `<div class="modal-slide ${i===0?'active':''}"><img src="${img}" alt=""/></div>`
         ).join('');
         buildCarouselNav(slidesEl, navEl, p.images.length, null);
       } else {
@@ -1806,19 +1537,24 @@
       document.body.style.overflow = 'hidden';
     }
 
-    function closeModal() {
+    modalClose.addEventListener('click', () => {
       document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
-      document.querySelectorAll('#modalSlides iframe').forEach(f => { f.src = f.src; });
       overlay.classList.remove('open');
       document.body.style.overflow = '';
-    }
-
-    modalClose.addEventListener('click', closeModal);
+    });
     overlay.addEventListener('click', e => {
-      if (e.target === overlay) closeModal();
+      if (e.target === overlay) {
+        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') {
+        document.querySelectorAll('#modalSlides video').forEach(v => v.pause());
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
     });
 
     document.querySelectorAll('.project-card').forEach((card, i) => {
@@ -1893,146 +1629,6 @@
         tab.classList.add('active');
       });
     });
-
-    // ============================================================
-    // GYRO / MOUSE PARALLAX
-    // ============================================================
-    let gyroEnabled = false;
-    let gyroBaseB = null, gyroBaseG = null;
-    let parallaxX = 0, parallaxY = 0;
-    let parallaxTargetX = 0, parallaxTargetY = 0;
-
-    const heroEl      = document.getElementById('hero');
-    const heroTag     = heroEl.querySelector('.hero-tag');
-    const heroH1      = heroEl.querySelector('h1');
-    const heroSub     = heroEl.querySelector('.hero-sub');
-    const heroLineEl  = heroEl.querySelector('.hero-line');
-
-    function applyHeroParallax(nx, ny) {
-      heroTag.style.transform    = `translate(${nx * 5}px, ${ny * 4}px)`;
-      heroH1.style.transform     = `translate(${nx * 12}px, ${ny * 10}px)`;
-      heroSub.style.transform    = `translate(${nx * 7}px, ${ny * 6}px)`;
-      heroLineEl.style.transform = `translateY(${ny * 16}px)`;
-    }
-
-    // Mouse fallback — always active on desktop
-    heroEl.addEventListener('mousemove', e => {
-      if (gyroEnabled) return;
-      const r = heroEl.getBoundingClientRect();
-      parallaxTargetX = (e.clientX - r.left) / r.width  * 2 - 1;
-      parallaxTargetY = (e.clientY - r.top)  / r.height * 2 - 1;
-    });
-    heroEl.addEventListener('mouseleave', () => {
-      if (gyroEnabled) return;
-      parallaxTargetX = 0;
-      parallaxTargetY = 0;
-    });
-
-    // Smooth lerp loop for hero
-    function heroLoop() {
-      parallaxX += (parallaxTargetX - parallaxX) * 0.1;
-      parallaxY += (parallaxTargetY - parallaxY) * 0.1;
-      applyHeroParallax(parallaxX, parallaxY);
-      requestAnimationFrame(heroLoop);
-    }
-    heroLoop();
-
-    // ============================================================
-    // CARD HOLO TILT + SHEEN
-    // ============================================================
-    document.querySelectorAll('.project-card').forEach(card => {
-      const bg      = card.querySelector('.card-bg');
-      const content = card.querySelector('.card-content');
-      const sheen   = card.querySelector('.card-sheen');
-
-      function onCardMove(nx, ny) {
-        const rx = ny * 12, ry = -nx * 12;
-        card.style.transform    = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-        if (bg)      bg.style.transform      = `translate(${nx * 5}px, ${ny * 5}px)`;
-        if (content) content.style.transform = `translate(${nx * 10}px, ${ny * 8}px)`;
-        if (sheen) {
-          const pct = ((nx + 1) / 2 * 100).toFixed(1);
-          sheen.style.background = `linear-gradient(105deg, transparent ${pct - 20}%, rgba(200,184,154,0.08) ${pct}%, transparent ${+pct + 20}%)`;
-        }
-      }
-      function resetCard() {
-        card.style.transform    = '';
-        if (bg)      bg.style.transform      = '';
-        if (content) content.style.transform = '';
-        if (sheen)   sheen.style.background  = '';
-      }
-
-      // Desktop mouse
-      card.addEventListener('mousemove', e => {
-        const r  = card.getBoundingClientRect();
-        const nx = (e.clientX - r.left) / r.width  * 2 - 1;
-        const ny = (e.clientY - r.top)  / r.height * 2 - 1;
-        onCardMove(nx, ny);
-      });
-      card.addEventListener('mouseleave', resetCard);
-
-      // Mobile touch tilt — driven by gyro via global values
-      card._holoMove = onCardMove;
-      card._holoReset = resetCard;
-    });
-
-    // ============================================================
-    // GYROSCOPE (mobile)
-    // ============================================================
-    function handleOrientation(e) {
-      if (!gyroEnabled) return;
-      if (gyroBaseB === null) { gyroBaseB = e.beta; gyroBaseG = e.gamma; }
-      const db = Math.max(-40, Math.min(40, e.beta  - gyroBaseB));
-      const dg = Math.max(-40, Math.min(40, e.gamma - gyroBaseG));
-      const nx = dg / 40;
-      const ny = db / 40;
-
-      // Hero
-      parallaxTargetX = nx;
-      parallaxTargetY = ny;
-
-      // Cards — apply to whichever is in viewport
-      document.querySelectorAll('.project-card').forEach(card => {
-        const r = card.getBoundingClientRect();
-        const inView = r.top < window.innerHeight && r.bottom > 0;
-        if (inView && card._holoMove) card._holoMove(nx, ny);
-        else if (card._holoReset)     card._holoReset();
-      });
-    }
-
-    function startGyro() {
-      gyroEnabled = true;
-      gyroBaseB = null; gyroBaseG = null;
-      window.addEventListener('deviceorientation', handleOrientation);
-      document.getElementById('ios-gyro-banner').style.display = 'none';
-    }
-
-    function requestGyroPermission() {
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-          typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission().then(state => {
-          if (state === 'granted') startGyro();
-        }).catch(() => {});
-      } else {
-        startGyro();
-      }
-    }
-
-    // Auto-detect on load
-    (function detectGyro() {
-      const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-      if (!isTouch) return;
-      if (typeof DeviceOrientationEvent !== 'undefined' &&
-          typeof DeviceOrientationEvent.requestPermission === 'function') {
-        // iOS — show banner, wait for tap
-        const banner = document.getElementById('ios-gyro-banner');
-        banner.style.display = 'flex';
-      } else if (typeof DeviceOrientationEvent !== 'undefined') {
-        // Android — start immediately
-        setTimeout(startGyro, 400);
-      }
-    })();
-
   </script>
 </body>
 </html>
