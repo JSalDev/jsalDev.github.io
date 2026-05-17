@@ -1346,8 +1346,8 @@
         <div class="card-glow glow-warm"></div>
         <div class="card-sheen"></div>
         <div class="card-content">
-          <p class="card-category">VFX — Fire Simulation</p>
-          <h3 class="card-title">Inferno<br/>Apache Down</h3>
+          <p class="card-category">VFX — EmberGen Studies</p>
+          <h3 class="card-title">Ignition<br/><em>EmberGen Studies</em></h3>
           <div class="card-meta">EmberGen · 3ds Max · After Effects</div>
         </div>
         <span class="card-number">003</span>
@@ -1639,15 +1639,30 @@
         images: []
       },
       {
-        title: "Inferno<br/><em>Apache Down</em>",
-        category: "VFX — Fire Simulation",
-        description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Original soundtrack composed to match the destruction sequence.\n\nAlso includes two timelapses of the burn — same fire, two different perspectives.\n\nBest experienced with audio on.",
+        title: "Ignition<br/><em>EmberGen Studies</em>",
+        category: "VFX — EmberGen Studies",
+        description: "An ongoing series of fire and destruction simulations built in EmberGen — each piece a study in combustion behaviour, fuel dynamics, and volumetric motion.\n\nBest experienced with audio on.",
         tools: ["EmberGen", "3ds Max", "After Effects"],
         vimeo: "",
         mediaSlides: [
-          { type: "vimeo", id: "1192877885", label: "Takedown" },
-          { type: "youtube", id: "F8jzrwrSyEQ", label: "Timelapse I" },
-          { type: "youtube", id: "qGL8FI6MT1s", label: "Timelapse II" }
+          {
+            type: "vimeo",
+            id: "1192877885",
+            label: "Apache Down",
+            description: "A fully procedural fire and destruction simulation built in EmberGen, using 3ds Max VertexPaint to define fuel emission zones and collision areas across the airframe. Original soundtrack composed to match the destruction sequence."
+          },
+          {
+            type: "vimeo",
+            id: "1193026758",
+            label: "Consumed Sedan",
+            description: "Consumed sedan.\n\nProcedural combustion and oscillators study — fuel mapping via 3ds Max VertexPaint, simulation and rendering in EmberGen, post production in After Effects.\n\nModel Credits: \"Abandoned Generic Sedan 1\" by Loïc Norgeot (skfb.ly/psHvC)."
+          },
+          {
+            type: "vimeo",
+            id: "",
+            label: "Ignis",
+            description: "Coming soon."
+          }
         ],
         images: []
       },
@@ -1688,18 +1703,22 @@
     const overlay = document.getElementById('modalOverlay');
     const modalClose = document.getElementById('modalClose');
 
-    function buildCarouselNav(slidesEl, navEl, total, labels) {
+    function buildCarouselNav(slidesEl, navEl, total, labels, descriptions) {
       let current = 0;
+      const descEl = document.getElementById('modalDescription');
 
       function goTo(idx) {
-        // Pause any videos
         slidesEl.querySelectorAll('video').forEach(v => v.pause());
+        slidesEl.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
         slidesEl.querySelectorAll('.modal-slide').forEach(s => s.classList.remove('active'));
         current = (idx + total) % total;
         slidesEl.querySelectorAll('.modal-slide')[current].classList.add('active');
         const labelText = labels ? labels[current] : `${current + 1} / ${total}`;
         const counter = navEl.querySelector('.modal-slide-counter');
         if (counter) counter.innerHTML = `<span>${labelText}</span>`;
+        if (descriptions && descriptions[current] && descEl) {
+          descEl.innerHTML = descriptions[current].replace(/\n\n/g, '<br/><br/>');
+        }
       }
 
       const firstLabel = labels ? labels[0] : `1 / ${total}`;
@@ -1733,7 +1752,8 @@
       const navEl = document.getElementById('modalCarouselNav');
 
       if (p.mediaSlides && p.mediaSlides.length > 0) {
-        slidesEl.innerHTML = p.mediaSlides.map((m, i) => {
+        const activeSlides = p.mediaSlides.filter(m => m.id);
+        slidesEl.innerHTML = activeSlides.map((m, i) => {
           let embedHtml = '';
           if (m.type === 'vimeo') {
             embedHtml = `<iframe src="https://player.vimeo.com/video/${m.id}?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
@@ -1742,7 +1762,17 @@
           }
           return `<div class="modal-slide ${i===0?'active':''}">${embedHtml}</div>`;
         }).join('');
-        buildCarouselNav(slidesEl, navEl, p.mediaSlides.length, p.mediaSlides.map(m => m.label));
+        // Set first slide description
+        const descEl = document.getElementById('modalDescription');
+        if (activeSlides[0].description) {
+          descEl.innerHTML = activeSlides[0].description.replace(/\n\n/g, '<br/><br/>');
+        }
+        buildCarouselNav(
+          slidesEl, navEl,
+          activeSlides.length,
+          activeSlides.map(m => m.label),
+          activeSlides.map(m => m.description || p.description)
+        );
       } else if (p.videos && p.videos.length > 0) {
         slidesEl.innerHTML = p.videos.map((vid, i) =>
           `<div class="modal-slide ${i===0?'active':''}">
