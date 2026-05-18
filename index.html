@@ -373,6 +373,9 @@
       overflow: hidden;
       background: var(--surface);
       cursor: none;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.15s ease;
     }
     .project-card:nth-child(1) { grid-column: span 7; grid-row: span 2; aspect-ratio: unset; min-height: 480px; }
     .project-card:nth-child(2) { grid-column: span 5; min-height: 235px; }
@@ -1095,6 +1098,21 @@
        INTERACTIVE EFFECTS — hero parallax · card holo sheen · iOS gyro banner
        ============================================================ */
 
+    /* ---- Card holo sheen layer ---- */
+    .card-sheen {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 3;
+    }
+
+    /* ---- Card — disable tilt on touch devices ---- */
+    @media (hover: none) {
+      .project-card { transform: none !important; }
+    }
+
     /* ---- Modal slide image cursor ---- */
     .modal-slide img { cursor: zoom-in; }
 
@@ -1229,7 +1247,7 @@
         </div>
         <div class="card-glow glow-green"></div>
         <div class="card-content">
-          <p class="card-category">VFX — Partículas</p>
+          <p class="card-category">VFX — Particles</p>
           <h3 class="card-title">Nebula<br/>Destruction</h3>
           <div class="card-meta">Unreal Engine 5 · Houdini</div>
         </div>
@@ -1306,7 +1324,7 @@
         </div>
         <div class="card-glow glow-warm"></div>
         <div class="card-content">
-          <p class="card-category">VFX — Simulación</p>
+          <p class="card-category">VFX — Simulation</p>
           <h3 class="card-title">Fracture Sim</h3>
           <div class="card-meta">Houdini · RBD</div>
         </div>
@@ -1770,6 +1788,128 @@
         tab.classList.add('active');
       });
     });
+
+    // ============================================================
+    // GYRO / MOUSE PARALLAX — hero tag ±5px · h1 ±12px · line ±16px
+    // ============================================================
+    (function() {
+      const heroTag  = document.querySelector('.hero-tag');
+      const heroH1   = document.querySelector('h1');
+      const heroLine = document.querySelector('.hero-line');
+
+      let targetX = 0, targetY = 0;
+      let currentX = 0, currentY = 0;
+      const LERP = 0.1;
+
+      function applyParallax(nx, ny) {
+        // nx, ny normalised -1..1
+        if (heroTag)  heroTag.style.transform  = `translate(${nx * 5}px, ${ny * 5}px)`;
+        if (heroH1)   heroH1.style.transform   = `translate(${nx * 12}px, ${ny * 12}px)`;
+        if (heroLine) heroLine.style.transform = `translateY(${ny * 16}px)`;
+      }
+
+      function loop() {
+        currentX += (targetX - currentX) * LERP;
+        currentY += (targetY - currentY) * LERP;
+        applyParallax(currentX, currentY);
+        requestAnimationFrame(loop);
+      }
+      loop();
+
+      if (!isTouchDevice) {
+        // Desktop — mouse
+        document.addEventListener('mousemove', e => {
+          targetX = (e.clientX / window.innerWidth  - 0.5) * 2;
+          targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+        });
+      } else {
+        // Mobile — DeviceOrientation
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+        function startGyro() {
+          let gyroBaseB = null, gyroBaseG = null;
+          window.addEventListener('deviceorientation', e => {
+            if (gyroBaseB === null) { gyroBaseB = e.beta;  gyroBaseG = e.gamma; }
+            const db = Math.max(-30, Math.min(30, (e.beta  - gyroBaseB)));
+            const dg = Math.max(-30, Math.min(30, (e.gamma - gyroBaseG)));
+            targetX = dg / 30;
+            targetY = db / 30;
+          });
+        }
+
+        if (isIOS) {
+          // Show permission banner
+          const banner = document.createElement('div');
+          banner.id = 'gyroBanner';
+          banner.style.cssText = `
+            position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+            background:var(--surface); border:1px solid var(--border);
+            color:var(--text); font-family:var(--ff-mono); font-size:11px;
+            letter-spacing:0.1em; padding:14px 20px; z-index:500;
+            display:flex; align-items:center; gap:16px; white-space:nowrap;
+          `;
+          banner.innerHTML = `<span>Enable motion effects?</span>
+            <button id="gyroYes" style="background:var(--accent);color:var(--bg);border:none;padding:6px 14px;font-family:var(--ff-mono);font-size:10px;letter-spacing:0.1em;cursor:pointer;">Enable</button>
+            <button id="gyroNo"  style="background:transparent;color:var(--muted);border:1px solid var(--border);padding:6px 14px;font-family:var(--ff-mono);font-size:10px;letter-spacing:0.1em;cursor:pointer;">Dismiss</button>`;
+          document.body.appendChild(banner);
+
+          document.getElementById('gyroYes').addEventListener('click', () => {
+            DeviceOrientationEvent.requestPermission().then(state => {
+              if (state === 'granted') startGyro();
+            }).catch(() => {});
+            banner.remove();
+          });
+          document.getElementById('gyroNo').addEventListener('click', () => banner.remove());
+        } else {
+          // Android — start silently after short delay
+          setTimeout(startGyro, 800);
+        }
+      }
+    })();
+
+    // ============================================================
+    // CARD HOLO TILT — perspective rotateX/Y · sheen sweep · card-bg shift
+    // ============================================================
+    (function() {
+      document.querySelectorAll('.project-card').forEach(card => {
+        const bg      = card.querySelector('.card-bg');
+        const content = card.querySelector('.card-content');
+
+        // Inject sheen element if not already present
+        let sheen = card.querySelector('.card-sheen');
+        if (!sheen) {
+          sheen = document.createElement('div');
+          sheen.className = 'card-sheen';
+          card.appendChild(sheen);
+        }
+
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const cx   = (e.clientX - rect.left) / rect.width  - 0.5;  // -0.5..0.5
+          const cy   = (e.clientY - rect.top)  / rect.height - 0.5;
+
+          card.style.transform    = `perspective(800px) rotateY(${cx * 12}deg) rotateX(${-cy * 12}deg)`;
+          if (bg)      bg.style.transform      = `translate(${cx * 5}px, ${cy * 5}px)`;
+          if (content) content.style.transform = `translate(${cx * 10}px, ${cy * 10}px)`;
+
+          // Sheen gradient sweeps based on horizontal angle
+          const sheenX = (cx + 0.5) * 100;  // 0..100%
+          sheen.style.background = `linear-gradient(105deg,
+            transparent ${sheenX - 20}%,
+            rgba(255,255,255,0.04) ${sheenX}%,
+            rgba(255,255,255,0.08) ${sheenX + 5}%,
+            transparent ${sheenX + 25}%)`;
+          sheen.style.opacity = '1';
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform    = 'perspective(800px) rotateY(0deg) rotateX(0deg)';
+          if (bg)      bg.style.transform      = '';
+          if (content) content.style.transform = '';
+          sheen.style.opacity = '0';
+        });
+      });
+    })();
   </script>
 </body>
 </html>
